@@ -1,0 +1,6 @@
+Performances of the agent on the new environment
+TCP :100.0
+Average num of fractions: 10.18 std dev: 2.854400112107621
+Average duration: 244.32 std dev: 68.50560269058292
+Average survival: 0.9292490245257108 std dev: 0.044326280209967275
+Average radiation dose: 32.2 std dev: 5.440588203494177
