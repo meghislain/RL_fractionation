@@ -1,36 +1,20 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jul  5 15:15:13 2023
-
-@author: Ineed
-"""
-
-import matplotlib.pyplot as plt
-import matplotlib
-import matplotlib.animation as animation 
-import seaborn as sns
-import imageio
-import random
-import numpy as np
 import os
+import random
 import pickle
+import numpy as np
 from environment import GridEnv
 from grid import Grid
 from math import exp, log, ceil, floor
 from cell import HealthyCell, CancerCell, OARCell
 from NTCP_model import calculate_effective_dose, Lyman_Kutcher_Burman
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
-alpha_norm_tissue = 1.24*1e-2
-beta_norm_tissue = 4.84*1e-3
-alpha_tumor = 0.3113547444918789
-beta_tumor  = 0.06528191240051033
-n = 0.15
-m = 0.15
-TD50 = 80.1
-DOSE = 0.8
-
-class Rectal:
+class Conventional:
+    """
+    Class to simulate conventional treatment for a given cancer site.
+    Modify the parameters at the bottom of this code to reflect the properties of the cancer site.
+    """
     def __init__(self, episodes):
         self.episodes = episodes
         self.alpha_norm_tissue = alpha_norm_tissue
@@ -120,7 +104,6 @@ class Rectal:
             
             print("DVH calculation")
             volumes, dose_bins = self.env.grid.calculate_DVH_voxel(name=f"episode_{ep}", mask_OAR=self.env.mask_OAR, mask_PTV=self.env.mask_PTV)
-            np.savez(f"DVH/datas/dvh_baseline_{ep}.npz", volumes=volumes, dose_bins=dose_bins)
             Deff = calculate_effective_dose(volumes, dose_bins, self.n)
             print("Effective dose : ", Deff)
             print("NTCP calculation")
@@ -162,6 +145,10 @@ class Rectal:
     
     
 class Agent:
+    """
+    Class to simulate RL treatment for a given cancer site.
+    Modify the parameters at the bottom of this code to reflect the properties of the cancer site.
+    """
     def __init__(self, episodes, path, agent_name, agent_type):
         self.episodes = episodes
         self.alpha_norm_tissue = alpha_norm_tissue
@@ -183,7 +170,7 @@ class Agent:
                            dose_bin_width=self.dose_bin_width)
         
         self.path = path
-        self.agent_name = agent_name # 16cc_14
+        self.agent_name = agent_name # Rectum_16
         self.agent_type = agent_type # SARSAgent
         self.load_agent()
         
@@ -191,7 +178,7 @@ class Agent:
         
         
         
-        with open("Results/rectum_rl.txt", "w") as f:
+        with open("RL_treatment.txt", "w") as f:
             f.write('Performances of the agent on the new environment' + '\n')
             f.write("TCP :" + str(results["TCP"]) + "\n") 
             f.write("Average NTCP (rectal bleeding): " + str(np.mean(results["fractions"])) + " std dev: " + str(np.std(results["fractions"])) + "\n") 
@@ -202,15 +189,8 @@ class Agent:
         
    
     def load_agent(self):
-        self.q_table = np.load(self.path + f'q_table_{self.agent_name}' '.npy', allow_pickle=False)  
-        
-        with open(self.path + f'results_{self.agent_name}' + '.pickle', 'rb') as file:
-                self.old_results = pickle.load(file)
-                
-        with open(self.path + f'{self.agent_type}{self.agent_name}' + '.pickle', 'rb') as file:
-                self.agent_save = pickle.load(file)
-                
-        self.old_env = self.agent_save.env
+        load_path = os.path.join(self.path, self.agent_name, f'q_table_{self.agent_name}.npy')
+        self.q_table = np.load(load_path, allow_pickle=False)  
         
     def choose_action(self, state):
         actions = np.argwhere(self.q_table[state]==np.max(self.q_table[state])).flatten()
@@ -269,7 +249,7 @@ class Agent:
             
             print("DVH calculation")
             volumes, dose_bins = self.env.grid.calculate_DVH_voxel(name=f"episode_{ep}", mask_OAR=self.env.mask_OAR, mask_PTV=self.env.mask_PTV)
-            np.savez(f"DVH/datas/dvh_rl_{ep}.npz", volumes=volumes, dose_bins=dose_bins)
+            #np.savez(f"DVH/datas/dvh_rl_{ep}.npz", volumes=volumes, dose_bins=dose_bins)
             Deff = calculate_effective_dose(volumes, dose_bins, self.n)
             print("Effective dose : ", Deff)
             print("NTCP calculation")
@@ -308,3 +288,18 @@ class Agent:
         
         return results
     
+    
+    
+alpha_norm_tissue = 1.24*1e-2
+beta_norm_tissue = 4.84*1e-3
+alpha_tumor = 0.3113547444918789
+beta_tumor  = 0.06528191240051033
+n = 0.15
+m = 0.15
+TD50 = 80.1
+DOSE = 0.8
+    
+agent = Agent(episodes=100, 
+              path=dir_path, 
+              agent_name="Rectum_16", 
+              agent_type="SARSAgent")

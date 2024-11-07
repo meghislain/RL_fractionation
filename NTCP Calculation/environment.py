@@ -162,13 +162,15 @@ class GridEnv:
         structure_element = np.ones((5, 5), dtype=bool)  # 5x5 structuring element
         self.mask_PTV = binary_dilation(self.mask_PTV, structure=structure_element)
         
-        #plt.imshow(original_mask_PTV, cmap='Greys', alpha=0.5, label='Original')
+        """
+        plt.imshow(original_mask_PTV, cmap='Greys', alpha=0.5, label='Original')
         plt.imshow(self.mask_PTV, cmap='Reds', alpha=0.5, label='Dilated')
         plt.legend(loc='best')
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.title('Original and Dilated Masks')
         plt.savefig('DVH/mask.svg')
+        """
         
         self.mask_OAR = np.logical_not(self.mask_PTV)
         self.grid.compute_center()

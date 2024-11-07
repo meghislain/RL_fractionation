@@ -351,11 +351,11 @@ class Grid:
         dose_bins_h, volumes_h = DVH(self.cumulative_dose, mask_OAR)
         dose_bins_c, volumes_c = DVH(self.cumulative_dose, mask_PTV)
         
-            
-        fig, ax = plt.subplots(figsize = (32,24))
-        ax.plot(dose_bins_c, volumes_c, label = "PTV", color="orange", linewidth=4)
+        """
+        #fig, ax = plt.subplots(figsize = (32,24))
+        #ax.plot(dose_bins_c, volumes_c, label = "PTV", color="orange", linewidth=4)
         #ax.fill_between(dose_bins_c, volumes_c, color='orange', alpha=0.5)
-        ax.plot(dose_bins_h, volumes_h, label = "OAR", color="blue", linewidth=4)
+        #ax.plot(dose_bins_h, volumes_h, label = "OAR", color="blue", linewidth=4)
         #ax.fill_between(dose_bins_h, volumes_h, color='lightblue')
          
         
@@ -398,6 +398,7 @@ class Grid:
         
         plt.savefig(f"cumulative_dose/cDose_{name}.svg")
         plt.clf()
+        """
 
             
         return volumes_h, dose_bins_h

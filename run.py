@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import os
 import argparse
 from simulation import SARSAgent
 from environment import GridEnv
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 parser = argparse.ArgumentParser(description='2D Env. with Tabular Agent')
 parser.add_argument("--epochs", type = int, help="Number of epochs, train steps, test steps", nargs = 3, default = [15, 1000, 100])
@@ -34,8 +33,6 @@ agent = SARSAgent(env=env,
                   alpha=args.alpha, 
                   epsilon=args.epsilon
                   )
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
 
 if args.load_path is not None:
     path = dir_path + "/Rectum_16/q_table_Rectum_16.npy"
