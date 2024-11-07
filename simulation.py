@@ -34,7 +34,7 @@ class Agent:
         self.alpha = alpha
         self.epsilon = epsilon
 
-        self.q_table = q_table
+        self.q_table = np.zeros((nb_stages_cancer, nb_stages_healthy, nb_actions)) 
         
     def choose_action(self, state):
         if np.random.random() < self.epsilon :
@@ -140,8 +140,6 @@ class Agent:
             print("Epoch ", i + 1)
             self.train(steps=train_steps)
             self.results = self.test(episodes=test_steps)
-            self.save(name + '_' + str(i), self.results)
-            
             self.alpha   -= alpha_change
             self.epsilon -= epsilon_change
 
@@ -175,22 +173,7 @@ class SARSAgent(Agent):
                 steps -= 1
             if steps > 0:
                 self.env.reset()
-            
-    def save(self, name, results):
-        filename = dir_path + "/retrained_rectum_16/"
-        np.save(filename + name + ".npy", self.q_table, allow_pickle=False)
-        
-        results["alpha"] = self.alpha
-        results["epsilon"] = self.epsilon
-        
-        with open(filename + name + ".pickle", 'wb') as file:
-            pickle.dump(results, file)
-            
-        with open(filename + name + "_SARSAgent.pickle", 'wb') as file_agent:
-            pickle.dump(self, file_agent)
-            
+                
     def load(self, path):
         print("Loading q-table")
         self.q_table = np.load(path, allow_pickle=False)
-
-        
