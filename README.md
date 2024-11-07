@@ -5,15 +5,6 @@ This repository contains two main projects:
 1. **Main Simulation Code**: The primary codebase for simulations, executed using `run.py`.
 2. **NTCP Calculation**: A specialized module for calculating the Normal Tissue Complication Probability (NTCP), found in the `NTCP Calculation` folder.
 
-## Table of Contents
-- [Repository Structure](#repository-structure)
-- [Installation and Setup](#installation-and-setup)
-- [Usage](#usage)
-  - [Running the Main Simulation](#running-the-main-simulation)
-  - [NTCP Calculation](#ntcp-calculation)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Repository Structure
 
 ```plaintext
